@@ -1,0 +1,45 @@
+---
+- name: Install and configure Apache HTTP server
+  hosts: target
+  become: true
+  tasks:
+    - name: Update package lists
+      yum:
+        update_cache: yes
+      register: yum_update_result
+      # Ensure the cache was successfully updated
+      notify:
+        - Show yum update result
+
+    - name: Installing Apache Web Server
+      yum:
+        name: httpd
+        state: present
+      register: httpd_install_result
+      # Notify if installation was successful or not
+      notify:
+        - Show httpd installation result
+
+    - name: Start Apache service
+      service:
+        name: httpd
+        state: started
+        enabled: yes  # Ensure Apache starts on boot
+      register: httpd_start_result
+      # Notify if Apache was successfully started
+      notify:
+        - Show httpd start result
+
+  handlers:
+    - name: Show yum update result
+      debug:
+        msg: "Yum update result: {{ yum_update_result }}"
+
+    - name: Show httpd installation result
+      debug:
+        msg: "httpd installation result: {{ httpd_install_result }}"
+
+    - name: Show httpd start result
+      debug:
+        msg: "httpd start result: {{ httpd_start_result }}"
+
