@@ -6,3 +6,4 @@ hostnames:
   - ip-address
 groups:
   target: "'amazon' in tags.OS"
+
